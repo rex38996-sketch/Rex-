@@ -1,0 +1,11 @@
+{
+  "name": "Personal JARVIS",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "postCreateCommand": "set -e; command -v unzip >/dev/null 2>&1 || (sudo apt-get update -qq && sudo apt-get install -y -qq unzip); zip=$(ls -t personal-jarvis-foundation*.zip | head -1); unzip -o \"$zip\"; cd jarvis && npm install",
+  "postAttachCommand": "cd jarvis; if ! curl -sf http://localhost:8787/health >/dev/null; then nohup npm run start:api >/tmp/jarvis-api.log 2>&1 & fi; sleep 2; if ! curl -sf http://localhost:3000 >/dev/null; then npm run dev --workspace @jarvis/web; fi",
+  "forwardPorts": [8787, 3000],
+  "portsAttributes": {
+    "8787": { "label": "JARVIS API", "visibility": "public", "onAutoForward": "silent" },
+    "3000": { "label": "JARVIS Web", "visibility": "public", "onAutoForward": "openBrowser" }
+  }
+}
